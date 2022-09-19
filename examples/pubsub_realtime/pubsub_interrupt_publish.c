@@ -125,7 +125,7 @@ publishInterrupt(int sig, siginfo_t* si, void* uc) {
 
     /* Save the calculated starting time for the next cycle */
     calculatedCycleStartTime[publisherMeasurementsCounter].tv_nsec =
-        calculatedCycleStartTime[publisherMeasurementsCounter - 1].tv_nsec + pubIntervalNs;
+        calculatedCycleStartTime[publisherMeasurementsCounter - 1].tv_nsec + (long int) pubIntervalNs;
     calculatedCycleStartTime[publisherMeasurementsCounter].tv_sec =
         calculatedCycleStartTime[publisherMeasurementsCounter - 1].tv_sec;
     nanoSecondFieldConversion(&calculatedCycleStartTime[publisherMeasurementsCounter]);
@@ -212,7 +212,7 @@ addPubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
     /* Start taking measurements */
     publisherMeasurementsCounter = 0;
     clock_gettime(CLOCKID, &calculatedCycleStartTime[0]);
-    calculatedCycleStartTime[0].tv_nsec += pubIntervalNs;
+    calculatedCycleStartTime[0].tv_nsec += (long int) pubIntervalNs;
     nanoSecondFieldConversion(&calculatedCycleStartTime[0]);
 
     /* Set the callback -- used as a sentinel to detect an operational publisher */
@@ -246,7 +246,7 @@ changePubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
     }
 
     clock_gettime(CLOCKID, &calculatedCycleStartTime[publisherMeasurementsCounter]);
-    calculatedCycleStartTime[publisherMeasurementsCounter].tv_nsec += pubIntervalNs;
+    calculatedCycleStartTime[publisherMeasurementsCounter].tv_nsec += (long int) pubIntervalNs;
     nanoSecondFieldConversion(&calculatedCycleStartTime[publisherMeasurementsCounter]);
 
     return UA_STATUSCODE_GOOD;

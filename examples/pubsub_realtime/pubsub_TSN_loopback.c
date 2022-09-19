@@ -77,7 +77,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/types.h>
-#include <sys/io.h>
+//#include <sys/io.h>
 #include <getopt.h>
 
 /* For thread operations */
@@ -353,7 +353,7 @@ addPubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
         *callbackId = threadCreation((UA_Int16)pubPriority, (size_t)pubCore,
                                      publisherETF, threadNamePub, threadArguments);
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-                    "Publisher thread callback Id: %ld\n", *callbackId);
+                    "Publisher thread callback Id: %lld\n", *callbackId);
 #endif
     }
     else {
@@ -363,7 +363,7 @@ addPubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
         *callbackId = threadCreation((UA_Int16)subPriority, (size_t)subCore,
                                      subscriber, threadNameSub, threadArguments);
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-                    "Subscriber thread callback Id: %ld\n", *callbackId);
+                    "Subscriber thread callback Id: %lld\n", *callbackId);
 #endif
     }
 
@@ -384,9 +384,9 @@ changePubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
 static void
 removePubSubApplicationCallback(UA_Server *server, UA_NodeId identifier,
                                 UA_UInt64 callbackId) {
-    if(callbackId && (pthread_join(callbackId, NULL) != 0))
+    if(callbackId && (pthread_join((long unsigned int)callbackId, NULL) != 0))
         UA_LOG_WARNING(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-                       "Pthread Join Failed thread: %ld\n", callbackId);
+                       "Pthread Join Failed thread: %lld\n", callbackId);
 
 }
 
@@ -918,7 +918,7 @@ updateMeasurementsPublisher(struct timespec start_time,
     }
 
     if(consolePrint)
-        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"Pub:%ld,%ld.%09ld\n",
+        UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,"Pub:%lld,%ld.%09ld\n",
                     counterValue, start_time.tv_sec, start_time.tv_nsec);
 
     if(signalTerm != true){
@@ -949,7 +949,7 @@ updateMeasurementsSubscriber(struct timespec receive_time, UA_UInt64 counterValu
 
     if(consolePrint)
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-                    "Sub:%ld,%ld.%09ld\n", counterValue,
+                    "Sub:%lld,%ld.%09ld\n", counterValue,
                     receive_time.tv_sec, receive_time.tv_nsec);
 
     if(signalTerm != true){
@@ -1245,7 +1245,7 @@ threadCreation(UA_Int16 threadPriority, size_t coreAffinity, void *(*thread)(voi
 
     if(CPU_ISSET(coreAffinity, &cpuset))
         UA_LOG_INFO(UA_Log_Stdout, UA_LOGCATEGORY_USERLAND,
-                    "%s CPU CORE: %ld\n", applicationName, coreAffinity);
+                    "%s CPU CORE: %d\n", applicationName, coreAffinity);
 
    return threadID;
 }
@@ -1655,7 +1655,7 @@ if(enableCsvLog)
         size_t pubLoopVariable = 0;
         for(pubLoopVariable = 0; pubLoopVariable < measurementsPublisher;
              pubLoopVariable++) {
-            fprintf(fpPublisher, "%ld,%ld.%09ld\n",
+            fprintf(fpPublisher, "%lld,%ld.%09ld\n",
                     publishCounterValue[pubLoopVariable],
                     publishTimestamp[pubLoopVariable].tv_sec,
                     publishTimestamp[pubLoopVariable].tv_nsec);
@@ -1666,7 +1666,7 @@ if(enableCsvLog)
         size_t subLoopVariable = 0;
         for(subLoopVariable = 0; subLoopVariable < measurementsSubscriber;
              subLoopVariable++) {
-            fprintf(fpSubscriber, "%ld,%ld.%09ld\n",
+            fprintf(fpSubscriber, "%lld,%ld.%09ld\n",
                     subscribeCounterValue[subLoopVariable],
                     subscribeTimestamp[subLoopVariable].tv_sec,
                     subscribeTimestamp[subLoopVariable].tv_nsec);

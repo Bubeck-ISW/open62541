@@ -57,7 +57,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/types.h>
-#include <sys/io.h>
+//#include <sys/io.h>
 #include <getopt.h>
 
 /* For thread operations */
@@ -1261,8 +1261,8 @@ int main(int argc, char **argv) {
 #endif
     char            *operBaseTimeFileName = NULL;
     char            *monotonicOffsetFileName = NULL;
-    FILE            *operBaseTimefile;
-    FILE            *monotonicOffsetFile;
+    FILE            *operBaseTimefile = NULL;
+    FILE            *monotonicOffsetFile = NULL;
     UA_String       transportProfile;
 
     /* Process the command line arguments */
@@ -1439,7 +1439,7 @@ int main(int argc, char **argv) {
     if (operBaseTimeFileName != NULL) {
         long double floatValueBaseTime;
         operBaseTimefile = fopen(operBaseTimeFileName, "r");
-        fscanf(operBaseTimefile,"%Lf", &floatValueBaseTime);
+        (void)!fscanf(operBaseTimefile,"%Lf", &floatValueBaseTime);
         uint64_t operBaseTimeInNs = (uint64_t)(floatValueBaseTime * SECONDS);
         threadArgPubSub1->operBaseTime = operBaseTimeInNs;
     }
